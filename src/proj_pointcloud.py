@@ -8,45 +8,26 @@ from pyproj import Transformer, transform
 from pyproj.aoi import AreaOfInterest, AreaOfUse, BBox
 from pyproj.database import query_utm_crs_info, query_crs_info
 
-parser = argparse.ArgumentParser(description='Process some integers.')
-parser.add_argument('integers', metavar='N', type=int, nargs='+',
-                    help='an integer for the accumulator')
+##parser = argparse.ArgumentParser(description='Process some integers.')
+##parser.add_argument('integers', metavar='N', type=int, nargs='+', help='an integer for the accumulator')
+##parser.add_argument('--sum', dest='accumulate', action='store_const', const=sum, default=max, help='sum the integers (default: find the max)')
 
-parser.add_argument('--sum', dest='accumulate', action='store_const',
-                    const=sum, default=max,
-                    help='sum the integers (default: find the max)')
+parser = argparse.ArgumentParser(description='Transforms coordinates from csv files at format (ID,x,y,z,epoch).')
+
+parser.add_argument('input', metavar='InputFile', type=ascii, help='Path to input csv file')
+parser.add_argument('output', metavar='OutputFile', type=ascii, help='Path to output csv file')
+parser.add_argument('epsgsource', metavar='EPSGSource', type=int, help='EPSG code source crs')
+parser.add_argument('epsgtarget', metavar='EPSGTarget', type=int, help='EPSG code target crs')
 
 args = parser.parse_args()
-print(args.accumulate(args.integers))
+print('args is: ', args)
 
-fromepsgcode = 7789 #int(input("Enter EPSG code source crs: "))
-print(fromepsgcode)
+inFile = args.input
+outFile = args.output
+epsgsource = args.epsgsource
+epsgtarget = args.epsgtarget
 
-toepsgcode = 4936 #int(input("Enter EPSG code target crs: "))
-print(toepsgcode)
-
-areaepsgcode = 1352 #int( input("Enter EPSG code area extent: "))
-print(areaepsgcode)
-
-# Norway 1352
-if areaepsgcode == 1352:
-    area = AreaOfInterest(4.68, 57.93, 31.22, 71.21)
-    aou = AreaOfUse(4.68, 57.93, 31.22, 71.21, "Norway - onshore")
-else:
-    area = AreaOfInterest(10.03, 54.96, 24.17, 69.07)
-    aou = AreaOfUse(10.03, 54.96, 24.17, 69.07, "Sweden")
-
-utm_crs_list = query_utm_crs_info(
-    datum_name="WGS 84",
-    area_of_interest=AreaOfInterest(
-        west_lon_degree=-93.581543,
-        south_lat_degree=42.032974,
-        east_lon_degree=-93.581543,
-        north_lat_degree=42.032974,
-    ),
-)
-utm_crs = CRS.from_epsg(utm_crs_list[0].code)
-print(utm_crs)
+##print(args.accumulate(args.integers))
 
 #TRYS
 x_coords = 2987993.64255 # np.random.randint(80000, 120000)
@@ -54,23 +35,12 @@ y_coords = 655946.42161  # np.random.randint(200000, 250000)
 z_coords = 5578690.43270 # np.random.randint(200000, 250000)
 epoch = 2020.00
 
-transformer1 = Transformer.from_crs(fromepsgcode, toepsgcode, area_of_interest = area)
-#transformer1 = Transformer.from_crs(CRS.from_epsg(7789), CRS.from_epsg(4936))
-#transformer1 = Transformer.from_crs(CRS.from_epsg(7789), CRS.from_epsg(4936), area_of_interest = area)
+transformer1 = Transformer.from_crs(epsgsource, epsgtarget)
 res1 = transformer1.transform(x_coords, y_coords, z_coords, epoch)
 print(res1)
-
-# Sweden 4378
-transformer2 = Transformer.from_proj(fromepsgcode, toepsgcode)
-res2 = transformer2.transform(x_coords, y_coords, z_coords, epoch)
-print(res2)
-
-transform(fromepsgcode, toepsgcode, x_coords, y_coords, z_coords, epoch)
 
 crs = CRS.from_epsg(7789)
 crs = CRS.from_string("epsg:4326")
 
 crs.to_epsg()
 crs.to_authority()
-
-print(x_coords, y_coords, z_coords, epoch)
