@@ -1,9 +1,23 @@
 
 import numpy as np
+import csv as csvinput 
+import argparse
+
 from pyproj import CRS
 from pyproj import Transformer, transform
 from pyproj.aoi import AreaOfInterest, AreaOfUse, BBox
 from pyproj.database import query_utm_crs_info, query_crs_info
+
+parser = argparse.ArgumentParser(description='Process some integers.')
+parser.add_argument('integers', metavar='N', type=int, nargs='+',
+                    help='an integer for the accumulator')
+
+parser.add_argument('--sum', dest='accumulate', action='store_const',
+                    const=sum, default=max,
+                    help='sum the integers (default: find the max)')
+
+args = parser.parse_args()
+print(args.accumulate(args.integers))
 
 fromepsgcode = 7789 #int(input("Enter EPSG code source crs: "))
 print(fromepsgcode)
