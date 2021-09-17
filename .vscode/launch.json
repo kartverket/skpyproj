@@ -11,10 +11,10 @@
             "program": "src\\proj_pointcloud.py",
             "console": "integratedTerminal",
             "args": [
-               "tests/PGS2019A.csv",
-                "tests/PGS2019A.out",
-                "7789",
-                "4937"
+                "tests/4958.csv",
+                "tests/output.csv",
+                "4937",
+                "25832"
             ]
         }
     ]
