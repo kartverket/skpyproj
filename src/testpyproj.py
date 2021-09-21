@@ -1,5 +1,3 @@
-import numpy as np
-import sqlite3
 from pyproj import CRS, Proj
 from pyproj import Transformer, transform
 from pyproj.aoi import AreaOfInterest, AreaOfUse, BBox
@@ -21,7 +19,7 @@ print(toepsgcode)
 areaepsgcode = 1352 #int( input("Enter EPSG code area extent: "))
 print(areaepsgcode)
 
-area = get_boundary(get_data_dir() + '\proj.db', areaepsgcode)  #AreaOfInterest(west_lon, south_lat, east_lon, north_lat)
+area = get_boundary(get_data_dir() + '\proj.db', areaepsgcode)
 print(area)
 
 if area.east_lon_degree == 0 and area.north_lat_degree == 0 and area.south_lat_degree and area.west_lon_degree:
@@ -30,9 +28,9 @@ else:
     transformer = Transformer.from_crs(fromepsgcode, toepsgcode, area_of_interest = area)
 
 #TRYS
-x_coords = 2987993.64255 # np.random.randint(80000, 120000)
-y_coords = 655946.42161  # np.random.randint(200000, 250000)
-z_coords = 5578690.43270 # np.random.randint(200000, 250000)
+x_coords = 2987993.64255
+y_coords = 655946.42161
+z_coords = 5578690.43270
 epoch = 2020.00
 
 res = transformer.transform(x_coords, y_coords, z_coords, epoch)
