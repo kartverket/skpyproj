@@ -7,6 +7,9 @@ from pyproj.database import query_utm_crs_info, query_crs_info
 from pyproj.enums import PJType
 from pyproj.datadir import get_data_dir
 
+# Internal library imports
+from utilies import get_boundary
+
 print(get_data_dir() + '\proj.db')
 
 fromepsgcode = 7789 #int(input("Enter EPSG code source crs: "))
@@ -18,22 +21,7 @@ print(toepsgcode)
 areaepsgcode = 1352 #int( input("Enter EPSG code area extent: "))
 print(areaepsgcode)
 
-south_lat = north_lat = west_lon = east_lon = 0
-
-#TODO: Move to new class
-connection = sqlite3.connect(get_data_dir() + '\proj.db')
-cursor = connection.cursor()
-cursor.execute("SELECT south_lat, north_lat, west_lon, east_lon FROM extent WHERE code = " + str(areaepsgcode) + ";")
-results = cursor.fetchall()
-if len(results) == 1:
-    south_lat = float(results[0][0])
-    north_lat = float(results[0][1])
-    west_lon = float(results[0][2])
-    east_lon = float(results[0][3])
-cursor.close()
-connection.close()
-
-area = AreaOfInterest(west_lon, south_lat, east_lon, north_lat)
+area = get_boundary(get_data_dir() + '\proj.db', areaepsgcode)  #AreaOfInterest(west_lon, south_lat, east_lon, north_lat)
 print(area)
 
 if area.east_lon_degree == 0 and area.north_lat_degree == 0 and area.south_lat_degree and area.west_lon_degree:

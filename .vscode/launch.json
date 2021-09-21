@@ -11,10 +11,12 @@
             "program": "src\\proj_pointcloud.py",
             "console": "integratedTerminal",
             "args": [
-                "tests/4958.csv",
+                "tests/7789.csv",
                 "tests/output.csv",
-                "4937",
-                "25832"
+                "7789",
+                "4936",
+                 "--area",
+                 "1352"
             ]
         }
     ]
