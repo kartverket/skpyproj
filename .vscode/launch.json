@@ -11,13 +11,14 @@
             "program": "src/skpyproj.py",
             "console": "integratedTerminal",
             "args": [
-                // "--input",                
-                //"tests/7789.csv",
-                //"--output",
-                //"tests/output.csv",
-                "7789",
-                "4936",
-                 "--area",
+               // "--help"//,
+                // "--input",
+               // "tests/7789.csv",
+               //  "--output",
+               //  "tests/output.csv",
+                "4937",
+                 "25832",
+                "--area",
                  "1352"
             ]
         }

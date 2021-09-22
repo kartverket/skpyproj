@@ -37,10 +37,10 @@ from utilies import get_boundary
 
 parser = argparse.ArgumentParser(description='Transforms coordinates from csv files at format ID(pointname) x y z epoc).')
 
-parser.add_argument('--input', metavar='InputFile', type=str, help='Path to input csv file')
-parser.add_argument('--output', metavar='OutputFile', type=str, help='Path to output csv file')
 parser.add_argument('epsgsource', metavar='EPSGSource', type=int, help='EPSG code source crs')
 parser.add_argument('epsgtarget', metavar='EPSGTarget', type=int, help='EPSG code target crs')
+parser.add_argument('--input', metavar='InputFile', type=str, help='Path to input csv file', )
+parser.add_argument('--output', metavar='OutputFile', type=str, help='Path to output csv file')
 parser.add_argument('--area', metavar = "Area", type=int, help = 'EPSG code area extent')
 
 args = parser.parse_args()
@@ -111,7 +111,7 @@ else:
     while True:
         inputcoord = input("Enter input coordinates (X Y Z Epoch): ")
         
-        if inputcoord == '' or inputcoord.lower() == 'exit':
+        if inputcoord == '' or inputcoord.lower() == 'exit' or inputcoord.lower() == 'quit':
             break
 
         splitline = inputcoord.split()
@@ -120,13 +120,13 @@ else:
             y = float(splitline[1])
             res = transformer.transform(x, y)
             L = [str(res[0]) + ' ' + str(res[1])]
-        if len(splitline) >=3:        
+        elif len(splitline) ==3:        
             x = float(splitline[0])
             y = float(splitline[1])
             z = float(splitline[2])
             res = transformer.transform(x, y, z)
             L = [str(res[0]) + ' ' + str(res[1]) + ' ' + str(res[2])]          
-        if len(splitline) == 4:
+        elif len(splitline) == 4:
             x = float(splitline[0])
             y = float(splitline[1])
             z = float(splitline[2])
@@ -134,13 +134,13 @@ else:
             res = transformer.transform(x, y, z, e)
             L = [str(res[0]) + ' ' + str(res[1]) + ' ' + str(res[2]) + ' ' + str(res[3])]
 
-            pointCount = pointCount + 1
+        pointCount = pointCount + 1
 
-            print(L)
+        print(L)
 
-            if outputFile is not None:
-                outputFile.writelines(L)
-                outputFile.writelines('\n')
+        if outputFile is not None:
+            outputFile.writelines(L)
+            outputFile.writelines('\n')
 
 if outputFile is not None:
     outputFile.close()
