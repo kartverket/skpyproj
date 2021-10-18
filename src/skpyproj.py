@@ -18,6 +18,10 @@ Example:
 
     input.csv is at the format ID(pointname) X Y Z Epoch
 
+    Or:
+
+    >>> python input.csv output.csv 7789 "+proj=utm +zone=32 +ellps=GRS80" 
+
 """
 
 # Standard library imports
@@ -33,12 +37,13 @@ from pyproj.database import query_utm_crs_info, query_crs_info
 from pyproj.datadir import get_data_dir
 
 # Internal library imports
-from utilies import get_boundary
+from utilies import get_boundary, try_parse_int
 
 parser = argparse.ArgumentParser(description='Transforms coordinates from csv files at format ID(pointname) x y z epoc).')
 
-parser.add_argument('epsgsource', metavar='EPSGSource', type=int, help='EPSG code source crs')
-parser.add_argument('epsgtarget', metavar='EPSGTarget', type=int, help='EPSG code target crs')
+parser.add_argument('sourcecrs', metavar='SourceCrs', type=str, help='EPSG code or proj string of source crs')
+parser.add_argument('targetcrs', metavar='TargetCrs', type=str, help='EPSG code or proj string of target crs')
+
 parser.add_argument('--input', metavar='InputFile', type=str, help='Path to input csv file', )
 parser.add_argument('--output', metavar='OutputFile', type=str, help='Path to output csv file')
 parser.add_argument('--area', metavar = "Area", type=int, help = 'EPSG code area extent')
@@ -61,20 +66,28 @@ else:
 if outFileName != "":
     outputFile = open(outFileName, "w")
 
-epsgsource = args.epsgsource
-epsgtarget = args.epsgtarget
+sourcecrs = args.sourcecrs
+targetcrs = args.targetcrs
+
+sourcecrs = try_parse_int(sourcecrs)
+
+targetcrs = try_parse_int(targetcrs)
 
 if args.area is not None:
     area = args.area
     connectionString = get_data_dir() + '\proj.db'
     bound = get_boundary(connectionString, area)
-    transformer = Transformer.from_crs(epsgsource, epsgtarget, area_of_interest = bound)
+    transformer = Transformer.from_crs(sourcecrs, targetcrs, area_of_interest = bound)
 else:
-    transformer = Transformer.from_crs(epsgsource, epsgtarget)
+    transformer = Transformer.from_crs(sourcecrs, targetcrs)
 
 pointCount = 0
 
 if os.path.exists(inFileName):
+    if outputFile is not None:
+        outputFile.writelines(str(sourcecrs) + '>' + str(targetcrs))
+        outputFile.writelines('\n')
+
     with open(inFileName) as csvfile:
         spamreader = csvinput.reader(csvfile, skipinitialspace = True, delimiter=' ', quotechar='|')
         for row in spamreader:        
@@ -91,14 +104,14 @@ if os.path.exists(inFileName):
 
             if len(row) == 3:
                 res = transformer.transform(x, y)
-                L = [id + ' ' + str(res[0]) + ' ' + str(res[1])]
+                L = ("{: <8} {: >20} {: >20}".format(id, res[0], res[1]))
             elif len(row) == 4:
                 res = transformer.transform(x, y, z)
-                L = [id + ' ' + str(res[0]) + ' ' + str(res[1]) + ' ' + str(res[2])]
+                L = ("{: <8} {: >20} {: >20} {: >20}".format(id, res[0], res[1], res[2]))
             else:
                 res = transformer.transform(x, y, z, e)
-                L = [id + ' ' + str(res[0]) + ' ' + str(res[1]) + ' ' + str(res[2]) + ' ' + str(res[3])]
-           
+                L = ("{: <8} {: >20} {: >20} {: >20} {: >15}".format(id, res[0], res[1], res[2], res[3]))
+        
             pointCount = pointCount + 1
 
             if outputFile is not None:
@@ -120,7 +133,7 @@ else:
             y = float(splitline[1])
             res = transformer.transform(x, y)
             L = [str(res[0]) + ' ' + str(res[1])]
-        elif len(splitline) ==3:        
+        elif len(splitline) ==3:
             x = float(splitline[0])
             y = float(splitline[1])
             z = float(splitline[2])
@@ -147,5 +160,3 @@ if outputFile is not None:
 
 print('Transformations succeed!')
 print(f'{pointCount} points were transformed')
-
-#if __name__ == '__main__':

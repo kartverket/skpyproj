@@ -3,6 +3,12 @@ from pyproj.aoi import AreaOfInterest
 
 from pyproj.datadir import get_data_dir
 
+def try_parse_int(text):
+    try:
+        return int(text)
+    except:
+        return text
+
 def get_boundary(database_file, areaepsgcode):
     south_lat = north_lat = west_lon = east_lon = 0
 

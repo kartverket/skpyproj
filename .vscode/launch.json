@@ -12,12 +12,12 @@
             "console": "integratedTerminal",
             "args": [
                // "--help"//,
-                // "--input",
-               // "tests/7789.csv",
-               //  "--output",
-               //  "tests/output.csv",
-                "4937",
-                 "25832",
+                 "--input",
+                "tests/7789.csv",
+                "--output",
+                 "tests/output.csv",
+                "7789",
+                "+proj=utm +zone=32 +ellps=GRS80",
                 "--area",
                  "1352"
             ]
