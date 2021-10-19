@@ -11,15 +11,17 @@
             "program": "src/skpyproj.py",
             "console": "integratedTerminal",
             "args": [
-               // "--help"//,
-                 "--input",
+                //"--help"//,
+                "--input",
                 "tests/7789.csv",
                 "--output",
-                 "tests/output.csv",
+                "tests/output.csv",
                 "7789",
                 "+proj=utm +zone=32 +ellps=GRS80",
                 "--area",
-                 "1352"
+                "1352",
+                "-d",
+                "1"
             ]
         }
     ]

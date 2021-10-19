@@ -29,12 +29,14 @@ import numpy as np
 import argparse
 import csv as csvinput
 import os
+from datetime import date
 
 # External library imports
 from pyproj import Transformer, transform
 from pyproj.aoi import AreaOfInterest, AreaOfUse, BBox
 from pyproj.database import query_utm_crs_info, query_crs_info
 from pyproj.datadir import get_data_dir
+from pyproj._show_versions import _get_proj_info
 
 # Internal library imports
 from utilies import get_boundary, try_parse_int
@@ -47,6 +49,7 @@ parser.add_argument('targetcrs', metavar='TargetCrs', type=str, help='EPSG code 
 parser.add_argument('--input', metavar='InputFile', type=str, help='Path to input csv file', )
 parser.add_argument('--output', metavar='OutputFile', type=str, help='Path to output csv file')
 parser.add_argument('--area', metavar = "Area", type=int, help = 'EPSG code area extent')
+parser.add_argument('-d', metavar = "D", type=int, help = 'Number of decimals')
 
 args = parser.parse_args()
 print('args is: ', args)
@@ -63,6 +66,13 @@ if args.output is not None:
 else:
     outFileName = ""
 
+Decimals = 4
+
+if args.d is not None:
+    Decimals = args.d
+
+varFormat =str('>18.' + str(Decimals) + 'f')
+
 if outFileName != "":
     outputFile = open(outFileName, "w")
 
@@ -70,7 +80,6 @@ sourcecrs = args.sourcecrs
 targetcrs = args.targetcrs
 
 sourcecrs = try_parse_int(sourcecrs)
-
 targetcrs = try_parse_int(targetcrs)
 
 if args.area is not None:
@@ -85,9 +94,10 @@ pointCount = 0
 
 if os.path.exists(inFileName):
     if outputFile is not None:
-        outputFile.writelines(str(sourcecrs) + '>' + str(targetcrs))
-        outputFile.writelines('\n')
-
+        outputFile.writelines('Proj version: ' + str(_get_proj_info()) + '\n')
+        outputFile.writelines('From crs: ' + str(sourcecrs) + ', to crs ' + str(targetcrs) + '\n')        
+        outputFile.writelines('Date: ' + str(date.today()) + '\n')
+        
     with open(inFileName) as csvfile:
         spamreader = csvinput.reader(csvfile, skipinitialspace = True, delimiter=' ', quotechar='|')
         for row in spamreader:        
@@ -103,15 +113,15 @@ if os.path.exists(inFileName):
             e = float(row[4]) if len(row) > 4 else 0
 
             if len(row) == 3:
-                res = transformer.transform(x, y)
-                L = ("{: <8} {: >20} {: >20}".format(id, res[0], res[1]))
+                res = transformer.transform(x, y)                
+                L = ("{: <8}".format(id) + format(res[0], varFormat)+ format(res[1], varFormat))
             elif len(row) == 4:
-                res = transformer.transform(x, y, z)
-                L = ("{: <8} {: >20} {: >20} {: >20}".format(id, res[0], res[1], res[2]))
+                res = transformer.transform(x, y, z)                
+                L = ("{: <8}".format(id) + format(res[0], varFormat)+ format(res[1], varFormat) + format(res[2], varFormat))
             else:
-                res = transformer.transform(x, y, z, e)
-                L = ("{: <8} {: >20} {: >20} {: >20} {: >15}".format(id, res[0], res[1], res[2], res[3]))
-        
+                res = transformer.transform(x, y, z, e)                
+                L = ("{: <8}".format(id) + format(res[0], varFormat)+ format(res[1], varFormat) + format(res[2], varFormat) + format(res[3], varFormat))                
+
             pointCount = pointCount + 1
 
             if outputFile is not None:
