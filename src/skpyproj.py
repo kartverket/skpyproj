@@ -41,7 +41,7 @@ from pyproj._show_versions import _get_proj_info
 # Internal library imports
 from utilies import get_boundary, try_parse_int
 
-parser = argparse.ArgumentParser(description='Transforms coordinates from csv files at format ID(pointname) x y z epoc).')
+parser = argparse.ArgumentParser(description='Transforms coordinates from csv files at format ID(pointname) x y z epoch).')
 
 parser.add_argument('sourcecrs', metavar='SourceCrs', type=str, help='EPSG code or proj string of source crs')
 parser.add_argument('targetcrs', metavar='TargetCrs', type=str, help='EPSG code or proj string of target crs')
