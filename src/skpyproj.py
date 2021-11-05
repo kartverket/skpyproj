@@ -84,6 +84,7 @@ targetcrs = try_parse_int(targetcrs)
 
 if args.area is not None:
     area = args.area
+    print(get_data_dir())
     connectionString = get_data_dir() + '\proj.db'
     bound = get_boundary(connectionString, area)
     transformer = Transformer.from_crs(sourcecrs, targetcrs, area_of_interest = bound)

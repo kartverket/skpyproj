@@ -15,12 +15,10 @@
                 //"tests/output.csv",
                 "7789",
                 "+proj=utm +zone=32 +ellps=GRS80",
-                //"--area",
-                //"1352",
+                "--area",
+                "1352",
                 "-d",
-                "1"
-
-
+                "6"
             ]
         }
     ]
