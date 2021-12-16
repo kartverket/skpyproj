@@ -11,12 +11,20 @@
             "program": "src/skpyproj.py",
             "console": "integratedTerminal",
             "args": [
+                // Ved tranformasjon frå til til fil:                
                 //"--output",
                 //"tests/output.csv",
-                "7789",
-                "+proj=utm +zone=32 +ellps=GRS80",
-                "--area",
-                "1352",
+                
+                "4937",
+                "5942",
+               
+                // Ved proj string:
+                //"+proj=utm +zone=32 +ellps=GRS80",
+               
+                // Ved "area":
+                // "--area",
+                // "1352",
+               
                 "-d",
                 "6"
             ]

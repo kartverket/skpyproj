@@ -32,7 +32,7 @@ import os
 from datetime import date
 
 # External library imports
-from pyproj import Transformer, transform
+from pyproj import Transformer, transform, CRS
 from pyproj.aoi import AreaOfInterest, AreaOfUse, BBox
 from pyproj.database import query_utm_crs_info, query_crs_info
 from pyproj.datadir import get_data_dir
@@ -59,7 +59,7 @@ outputFile = None
 if args.input is not None:
     inFileName = args.input
 else:
-    inFileName = ""    
+    inFileName = ""
 
 if args.output is not None:
     outFileName = args.output
@@ -76,27 +76,59 @@ varFormat =str('>18.' + str(Decimals) + 'f')
 if outFileName != "":
     outputFile = open(outFileName, "w")
 
-sourcecrs = args.sourcecrs
-targetcrs = args.targetcrs
+sourcecrs_epsg = args.sourcecrs
+targetcrs_epsg = args.targetcrs
 
-sourcecrs = try_parse_int(sourcecrs)
-targetcrs = try_parse_int(targetcrs)
+sourcecrs_epsg = try_parse_int(sourcecrs_epsg)
+targetcrs_epsg = try_parse_int(targetcrs_epsg)
+
+sourcecrs = CRS.from_user_input(sourcecrs_epsg)
+targetcrs = CRS.from_user_input(targetcrs_epsg)
+
+'''
+Test på rekkjefylgje på x og y:
+'''
+
+# Frå source crs
+is_geocentric_srs = sourcecrs.is_geocentric
+is_geographic_srs = sourcecrs.is_geographic
+is_vertical_srs = sourcecrs.is_vertical
+is_projected_srs = sourcecrs.is_projected
+is_compound_srs = sourcecrs.is_compound
+
+# Frå target crs
+is_geocentric_trg = targetcrs.is_geocentric
+is_geographic_trg = targetcrs.is_geographic
+is_vertical_trg = targetcrs.is_vertical
+is_projected_trg = targetcrs.is_projected
+is_compound_trg = targetcrs.is_compound
+
+'''
+Dette gjeld både input- og output-crs
+Viss is_projected = True eller is_geocentric = True => rekkjefylgje (x, y)
+Viss is_geographic = True => (y, x)
+
+NB! Unngå å bruke crs som berre er is_vertical = True, t.d. 5941. Bruk heller 5942.
+'''
+ 
+# Denne er sett til False. Då er det betre å leggje logikken i is_geographic, is_geocentric eller is_projected
+m_always_xy = False
 
 if args.area is not None:
     area = args.area
     print(get_data_dir())
     connectionString = get_data_dir() + '\proj.db'
     bound = get_boundary(connectionString, area)
-    transformer = Transformer.from_crs(sourcecrs, targetcrs, area_of_interest = bound)
+    transformer = Transformer.from_crs(sourcecrs_epsg, targetcrs_epsg, area_of_interest = bound, always_xy=m_always_xy)
 else:
-    transformer = Transformer.from_crs(sourcecrs, targetcrs)
+    transformer = Transformer.from_crs(sourcecrs_epsg, targetcrs_epsg, always_xy=m_always_xy)
 
 pointCount = 0
 
 if os.path.exists(inFileName):
     if outputFile is not None:
         outputFile.writelines('Proj version: ' + str(_get_proj_info()) + '\n')
-        outputFile.writelines('From crs: ' + str(sourcecrs) + ', to crs ' + str(targetcrs) + '\n')        
+        outputFile.writelines('From crs: ' + str(sourcecrs_epsg) + ', to crs ' + str(targetcrs_epsg) + '\n')        
         outputFile.writelines('Date: ' + str(date.today()) + '\n')
         
     with open(inFileName) as csvfile:
