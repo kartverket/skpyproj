@@ -1,0 +1,4 @@
+laspy>=2.2.0
+numpy>=1.23.4
+progress>=3.4.0
+pyproj>=3.4.0

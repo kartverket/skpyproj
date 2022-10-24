@@ -26,9 +26,9 @@ Example:
 
 # Standard library imports
 import numpy as np
-import argparse
 import csv as csvinput
 import os
+import argparse
 from datetime import date
 
 # External library imports
@@ -46,7 +46,7 @@ parser = argparse.ArgumentParser(description='Transforms coordinates from csv fi
 parser.add_argument('sourcecrs', metavar='SourceCrs', type=str, help='EPSG code or proj string of source crs')
 parser.add_argument('targetcrs', metavar='TargetCrs', type=str, help='EPSG code or proj string of target crs')
 
-parser.add_argument('--input', metavar='InputFile', type=str, help='Path to input csv file', )
+parser.add_argument('--input', metavar='InputFile', type=str, help='Path to input csv file')
 parser.add_argument('--output', metavar='OutputFile', type=str, help='Path to output csv file')
 parser.add_argument('--area', metavar = "Area", type=int, help = 'EPSG code area extent')
 parser.add_argument('-d', metavar = "D", type=int, help = 'Number of decimals')
@@ -133,7 +133,7 @@ if os.path.exists(inFileName):
         
     with open(inFileName) as csvfile:
         spamreader = csvinput.reader(csvfile, skipinitialspace = True, delimiter=' ', quotechar='|')
-        for row in spamreader:        
+        for row in spamreader:
             while ('' in row) : row.remove('')
 
             if len(row) < 3:
