@@ -8,29 +8,33 @@
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
-            "program": "src/sklastrans.py",
+            //"program": "src/sklastrans.py",
+            "program": "src/skpyproj.py",
             "console": "integratedTerminal",
             "args": [
-                "--input",
-                "C:/Users/himsve/Downloads/eksport_661260_20221024/47/data/32-1-478-149-05.las",
-                "--output",
-                "C:/Users/himsve/Downloads/eksport_661260_20221024/47/data/Out.las",
-                "25832",               
-                "5106"
-
-                // Ved tranformasjon frå til til fil:
+                //"--input",
+                //"C:/Users/himsve/Downloads/eksport_661260_20221024/47/data/32-1-478-149-05.las",                
                 //"--output",
-                //"tests/output.csv",                
+                //"C:/Users/himsve/Downloads/eksport_661260_20221024/47/data/ntm06.las",                
+                //"25832",
+                //"5106"
+
+                // Ved tranformasjon frå og til fil:
+                "-d",
+                "5",
+                "--input",
+                "c:/temp/input.csv",
+                "--output",
+                "c:/temp/output.csv",          
+                "7789",
+                "4936"
                 
                 // Ved proj string:
                 //"+proj=utm +zone=32 +ellps=GRS80",
-               
+
                 // Ved "area":
                 // "--area",
                 // "1352",
-               
-                //"-d",
-                //"6"
             ]
         }
     ]

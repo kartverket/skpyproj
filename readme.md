@@ -29,9 +29,46 @@ Gå til ei mappe kor repoet skal klonast. Klon repoet:
 
 ### skpyproj.py
 
+Med python-scriptet *sklastrans.py* kan ein transformere enkeltpunkter med utgangspunkt i EPSG-kodane på inn- og utgåande referenserammer og datum. 
+Scriptet har også høve til å transformere koordinatar på kolonneseparert format.
+
+#### Argumenter og opsjonar i skpyproj.py:
+
+```
+>python src/skpyproj.py --help
+usage: skpyproj.py [-h] [--input InputFile] [--output OutputFile] [--area Area] [-d D] SourceCrs TargetCrs
+
+Transforms coordinates from csv files at format ID(pointname) x y z epoch).
+
+positional arguments:
+  SourceCrs            EPSG code or proj string of source crs
+  TargetCrs            EPSG code or proj string of target crs
+
+optional arguments:
+  -h, --help           show this help message and exit
+  --input InputFile    Path to input csv file
+  --output OutputFile  Path to output csv file
+  --area Area          EPSG code area extent
+  -d D                 Number of decimals
+```
+
+#### Eksempel køyring av sklastrans.py med transformasjon av enkeltpunkt:
+
+```
+>python src/skpyproj.py -d 4 25832 25833
+Enter input coordinates (X Y Z Epoch): 500000 6700000
+['170060.37027450086 6715046.924547676']
+```
+
+#### Eksempel køyring av sklastrans.py med transformasjon av kolonneseparert fil:
+
+```
+>python src/skpyproj.py -d 4 --input inputfil.txt --output outputfil.txt 25832 25833
+```
+
 ### sklastrans.py
 
-Pythonscriptet *sklastrans.py* transformerer LAS-filer med transformasjonspakka *pyproj*. Innlesing av LAS-filene er gjort med pythonpakka *laspy*.
+Python-scriptet *sklastrans.py* transformerer LAS-filer med transformasjonspakka *pyproj*. Innlesing av LAS-filene er gjort med pythonpakka *laspy*.
 
 #### Argumenter og opsjonar i sklastrans.py:
 

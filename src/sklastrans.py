@@ -99,7 +99,7 @@ lasPoints = las.points
 transformer = Transformer.from_crs(sourcecrs_epsg, targetcrs_epsg)
 point_format = las.point_format
 
-# New header numbers
+# New header numbers    
 new_x_offset = 0.0
 new_y_offset = 0.0
 new_z_offset = 0.0
@@ -118,11 +118,12 @@ i = 0
 
 bar = Bar('Processed points', max=no_of_points)
 for point in lasPoints:
+    #print (point.X, point.Y, point.Z)
+    
     x_input = point.X*x_scale + x_offset
     y_input = point.Y*y_scale + y_offset
     z_input = point.Z*z_scale + z_offset
-        
-    #print (point.X, point.Y, point.Z)
+    
     #print (x_input, y_input, z_input)
       
     res = transformer.transform(x_input, y_input, z_input)
@@ -159,9 +160,8 @@ for point in lasPoints:
 
     i = i + 1
 
-    #if i > 16000:
+    #if i > 25000:
     #    break;
-    #print (i)
 
 print()
 
