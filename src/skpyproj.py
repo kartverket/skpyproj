@@ -185,21 +185,21 @@ else:
             x = float(splitline[0])
             y = float(splitline[1])
             res = transformer.transform(x, y)
-            output_line = [str(res[0]) + ' ' + str(res[1])]
+            output_line = (format(res[0], varFormat) + format(res[1], varFormat))               
         elif len(splitline) ==3:
             x = float(splitline[0])
             y = float(splitline[1])
             z = float(splitline[2])
             res = transformer.transform(x, y, z)
-            output_line = [str(res[0]) + ' ' + str(res[1]) + ' ' + str(res[2])]          
+            output_line = (format(res[0], varFormat) + format(res[1], varFormat) + format(res[2], varFormat))          
         elif len(splitline) == 4:
             x = float(splitline[0])
             y = float(splitline[1])
             z = float(splitline[2])
             e = float(splitline[3])
             res = transformer.transform(x, y, z, e)
-            output_line = [str(res[0]) + ' ' + str(res[1]) + ' ' + str(res[2]) + ' ' + str(res[3])]
-
+            output_line = (format(res[0], varFormat) + format(res[1], varFormat) + format(res[2], varFormat) + format(res[3], varFormat))          
+       
         pointCount = pointCount + 1
 
         print(output_line)
