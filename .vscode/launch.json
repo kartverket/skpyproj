@@ -19,15 +19,18 @@
                 //"25832",
                 //"5106"
 
+
                 // Ved tranformasjon frå og til fil:
                 "-d",
                 "5",
-                "--input",
-                "c:/temp/input.csv",
-                "--output",
-                "c:/temp/output.csv",          
-                "7789",
-                "4936"
+                // "--input",
+                // "c:/temp/input.csv",
+                // "--output",
+                // "c:/temp/output.csv",
+                "--area",          
+                "1352",
+                "4937",
+                "25832"
                 
                 // Ved proj string:
                 //"+proj=utm +zone=32 +ellps=GRS80",

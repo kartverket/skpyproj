@@ -20,7 +20,11 @@ Example:
 
     Or:
 
-    >>> python input.csv output.csv 7789 "+proj=utm +zone=32 +ellps=GRS80" 
+    >>> python --input input.csv --output output.csv 7789 "+proj=utm +zone=32 +ellps=GRS80"
+    
+    Or with area extent:
+    
+    >>> python --input input.csv --output output.csv 7789 4936 --area 1352
 
 """
 
@@ -35,11 +39,11 @@ from datetime import date
 from pyproj import Transformer, transform, CRS
 from pyproj.aoi import AreaOfInterest, AreaOfUse, BBox
 from pyproj.database import query_utm_crs_info, query_crs_info
-from pyproj.datadir import get_data_dir
+from pyproj.datadir import get_data_dir, get_user_data_dir
 from pyproj._show_versions import _get_proj_info
 
 # Internal library imports
-from utilies import get_boundary, try_parse_int
+from utilies import get_boundary, try_parse_int, projsync
 
 parser = argparse.ArgumentParser(description='Transforms coordinates from csv files at format ID(pointname) x y z epoch).')
 
@@ -53,6 +57,8 @@ parser.add_argument('-d', metavar = "D", type=int, help = 'Number of decimals')
 
 args = parser.parse_args()
 print('args is: ', args)
+
+projsync()
 
 outputFile = None
 
@@ -116,7 +122,8 @@ m_always_xy = False
 
 if args.area is not None:
     area = args.area
-    print(get_data_dir())
+    # print(get_data_dir())
+    # print(get_user_data_dir())
     connectionString = get_data_dir() + '\proj.db'
     bound = get_boundary(connectionString, area)
     transformer = Transformer.from_crs(sourcecrs_epsg, targetcrs_epsg, area_of_interest = bound, always_xy=m_always_xy)
@@ -147,22 +154,25 @@ if os.path.exists(inFileName):
 
             if len(row) == 3:
                 res = transformer.transform(x, y)                
-                L = ("{: <8}".format(id) + format(res[0], varFormat)+ format(res[1], varFormat))
+                output_line = ("{: <8}".format(id) + format(res[0], varFormat) + format(res[1], varFormat))
+                input_line = ("{: <8}".format(id) + format(x, varFormat) + format(y, varFormat))
             elif len(row) == 4:
                 res = transformer.transform(x, y, z)                
-                L = ("{: <8}".format(id) + format(res[0], varFormat)+ format(res[1], varFormat) + format(res[2], varFormat))
+                output_line = ("{: <8}".format(id) + format(res[0], varFormat) + format(res[1], varFormat) + format(res[2], varFormat))
+                input_line = ("{: <8}".format(id) + format(x, varFormat) + format(y, varFormat) + format(z, varFormat))
             else:
                 res = transformer.transform(x, y, z, e)                
-                L = ("{: <8}".format(id) + format(res[0], varFormat)+ format(res[1], varFormat) + format(res[2], varFormat) + format(res[3], varFormat))                
+                output_line = ("{: <8}".format(id) + format(res[0], varFormat) + format(res[1], varFormat) + format(res[2], varFormat) + format(res[3], varFormat))                
+                input_line = ("{: <8}".format(id) + format(x, varFormat) + format(y, varFormat) + format(z, varFormat) + format(e, varFormat))                
 
             pointCount = pointCount + 1
 
             if outputFile is not None:
-                outputFile.writelines(L)
+                outputFile.writelines(output_line)
                 outputFile.writelines('\n')
 
-            print("Source coordinates: ", row)
-            print("Target coordinates: ", L)
+            print("Source coordinates: ", input_line)
+            print("Target coordinates: ", output_line)
 else:
     while True:
         inputcoord = input("Enter input coordinates (X Y Z Epoch): ")
@@ -175,27 +185,27 @@ else:
             x = float(splitline[0])
             y = float(splitline[1])
             res = transformer.transform(x, y)
-            L = [str(res[0]) + ' ' + str(res[1])]
+            output_line = [str(res[0]) + ' ' + str(res[1])]
         elif len(splitline) ==3:
             x = float(splitline[0])
             y = float(splitline[1])
             z = float(splitline[2])
             res = transformer.transform(x, y, z)
-            L = [str(res[0]) + ' ' + str(res[1]) + ' ' + str(res[2])]          
+            output_line = [str(res[0]) + ' ' + str(res[1]) + ' ' + str(res[2])]          
         elif len(splitline) == 4:
             x = float(splitline[0])
             y = float(splitline[1])
             z = float(splitline[2])
             e = float(splitline[3])
             res = transformer.transform(x, y, z, e)
-            L = [str(res[0]) + ' ' + str(res[1]) + ' ' + str(res[2]) + ' ' + str(res[3])]
+            output_line = [str(res[0]) + ' ' + str(res[1]) + ' ' + str(res[2]) + ' ' + str(res[3])]
 
         pointCount = pointCount + 1
 
-        print(L)
+        print(output_line)
 
         if outputFile is not None:
-            outputFile.writelines(L)
+            outputFile.writelines(output_line)
             outputFile.writelines('\n')
 
 if outputFile is not None:

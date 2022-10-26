@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(     
-    name='mypackage',
+    name='skpyproj',
     author='Sveinung Himle',
     version='1.0',
     install_requires=[
@@ -10,5 +10,4 @@ setup(
         'progress',
         'pyproj',
     ],
-    # ... more options/metadata
 )

@@ -34,7 +34,7 @@ from pyproj import Transformer, transform, CRS
 from progress.bar import Bar
 
 # Internal library imports
-from utilies import get_boundary, try_parse_int
+from utilies import try_parse_int, projsync
 
 parser = argparse.ArgumentParser(description='Transforms data in LAS-files based on EPSG-kodes.')
 
@@ -46,6 +46,8 @@ parser.add_argument('--output', metavar='OutputFile', type=str, help='Path to ou
 
 args = parser.parse_args()
 print('args is: ', args)
+
+projsync()
 
 outputFile = None
 

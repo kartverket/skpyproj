@@ -1,7 +1,7 @@
 import sqlite3
 from pyproj.aoi import AreaOfInterest
-
 from pyproj.datadir import get_data_dir
+import pyproj.sync
 
 def try_parse_int(text):
     try:
@@ -27,3 +27,9 @@ def get_boundary(database_file, areaepsgcode):
     connection.close()
 
     return AreaOfInterest(west_lon, south_lat, east_lon, north_lat)
+
+def projsync():
+    #syncs Norwegian resources
+    pyproj.sync.get_transform_grid_list('no_kv', include_already_downloaded=False)
+    #syncs NKG resources
+    pyproj.sync.get_transform_grid_list('eur_nkg', include_already_downloaded=False)
