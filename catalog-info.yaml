@@ -1,37 +1,10 @@
-# nonk8s
-apiVersion: "backstage.io/v1alpha1"
-kind: "Component"
+apiVersion: backstage.io/v1alpha1
+kind: Component
 metadata:
-  name: "skpyproj"
+  name: skpyproj
   tags:
-  - "private"
+    - private
 spec:
-  type: "service"
-  lifecycle: "production"
-  owner: "nye_referanserammer"
----
-apiVersion: "backstage.io/v1alpha1"
-kind: "Group"
-metadata:
-  name: "security_champion_skpyproj"
-  title: "Security Champion skpyproj"
-spec:
-  type: "security_champion"
-  parent: "geodesi_security_champions"
-  members:
-  - "himsve"
-  children:
-  - "resource:skpyproj"
----
-apiVersion: "backstage.io/v1alpha1"
-kind: "Resource"
-metadata:
-  name: "skpyproj"
-  links:
-  - url: "https://github.com/kartverket/skpyproj"
-    title: "skpyproj på GitHub"
-spec:
-  type: "repo"
-  owner: "security_champion_skpyproj"
-  dependencyOf:
-  - "component:skpyproj"
+  type: service
+  lifecycle: production
+  owner: nye_referanserammer
